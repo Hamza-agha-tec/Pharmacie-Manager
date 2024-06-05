@@ -24,12 +24,14 @@ typedef struct {
     Medicament *medicaments;
 } Pharmacie;
 
-// Définition des fonctions
+// Définition des fonctions =>
+// Ajout d'un medicament =>
 void ajouter_medicament(Pharmacie *pharmacie, Medicament *nouveau_medicament) {
     nouveau_medicament->suivant = pharmacie->medicaments;
     pharmacie->medicaments = nouveau_medicament;
 }
 
+// supprimer un medicament =>
 void supprimer_medicament(Pharmacie *pharmacie, char *nom_medicament) {
     Medicament *actuel = pharmacie->medicaments;
     Medicament *precedent = NULL;
@@ -43,7 +45,6 @@ void supprimer_medicament(Pharmacie *pharmacie, char *nom_medicament) {
         } else {
             precedent->suivant = actuel->suivant;
         }
-        // Libération des ordonnances associées au médicament supprimé
         Ordonnance *ordonnance_actuelle = actuel->ordonnances;
         while (ordonnance_actuelle != NULL) {
             Ordonnance *ordonnance_a_supprimer = ordonnance_actuelle;
@@ -54,11 +55,13 @@ void supprimer_medicament(Pharmacie *pharmacie, char *nom_medicament) {
     }
 }
 
+// ajouter une ordonnace a un medicament =>
 void ajouter_ordonnance(Medicament *medicament, Ordonnance *nouvelle_ordonnance) {
     nouvelle_ordonnance->suivant = medicament->ordonnances;
     medicament->ordonnances = nouvelle_ordonnance;
 }
 
+// supprimer une ordonnace a un medicament =>
 void supprimer_ordonnance(Medicament *medicament, int numero_ordonnance) {
     Ordonnance *actuelle = medicament->ordonnances;
     Ordonnance *precedente = NULL;
@@ -76,6 +79,7 @@ void supprimer_ordonnance(Medicament *medicament, int numero_ordonnance) {
     }
 }
 
+// afficher les medicament =>
 void afficher_medicaments(Pharmacie *pharmacie) {
     Medicament *actuel = pharmacie->medicaments;
     while (actuel != NULL) {
@@ -84,6 +88,7 @@ void afficher_medicaments(Pharmacie *pharmacie) {
     }
 }
 
+// afficher les ordonnances d'un medicament =>
 void afficher_ordonnances(Medicament *medicament) {
     Ordonnance *actuelle = medicament->ordonnances;
     while (actuelle != NULL) {
@@ -92,6 +97,7 @@ void afficher_ordonnances(Medicament *medicament) {
     }
 }
 
+// sausauvegarder les données dans un fichier =>
 void sauvegarder_fichier(Pharmacie *pharmacie, char *nom_fichier) {
     FILE *fichier = fopen(nom_fichier, "w");
     if (fichier == NULL) {
@@ -106,14 +112,13 @@ void sauvegarder_fichier(Pharmacie *pharmacie, char *nom_fichier) {
             fprintf(fichier, "%d %s\n", ordonnance->numero, ordonnance->date);
             ordonnance = ordonnance->suivant;
         }
-        // Indiquer la fin des ordonnances pour ce médicament
         fprintf(fichier, "-1\n");
         medicament = medicament->suivant;
     }
-    // Indiquer la fin des médicaments
     fprintf(fichier, "-1\n");
     fclose(fichier);
 }
+
 
 void charger_fichier(Pharmacie *pharmacie, char *nom_fichier) {
     FILE *fichier = fopen(nom_fichier, "r");
@@ -178,7 +183,6 @@ int main() {
     Pharmacie pharmacie;
     pharmacie.medicaments = NULL;
 
-    // Charger les données de la pharmacie à partir du fichier
     charger_fichier(&pharmacie, "pharmacie.txt");
 
     int choix;
@@ -186,7 +190,6 @@ int main() {
         afficher_menu();
         if (scanf("%d", &choix) != 1) {
             printf("Option invalide. Veuillez réessayer.\n");
-            // Clear the invalid input
             while (getchar() != '\n');
             continue;
         }
@@ -288,7 +291,6 @@ int main() {
         }
     } while (choix != 9);
 
-    // Libérer la mémoire allouée
     Medicament *medicament = pharmacie.medicaments;
     while (medicament != NULL) {
         Medicament *medicament_a_supprimer = medicament;
